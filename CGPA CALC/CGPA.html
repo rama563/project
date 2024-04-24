@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+
+        hr {
+            background-color: black; 
+            height: 3px;
+        }
+        </style>
+    <title>CGPA CALc</title>
+</head>
+<body>
+    <h1 style="text-align: center;background-color: black;-webkit-text-fill-color: azure;">CGPA CALCULATOR</h1>
+    <div class="alert alert-info">
+        <strong>Info!</strong>  If you are a 1st year student, you don't need to fill in the below details.
+    </div>
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="pv" style="width: 160px;">Previous year <mark>CGPA</mark>:</label>
+            <input type="text" class="form-control" name="pv" id="pv" value="0.00" style="width:100px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+        </div>
+        <div class="form-group">
+            <label for="Pc" style="width: 180px;">Previous year <mark>CREDITS</mark>:</label>
+            <input type="text" class="form-control" name="Pc" id="Pc" value="0" style="width: 100px;">
+        </div>
+        <hr>
+        <h3><strong>ENTER THE SUBJECTS DETAILS:</strong></h3>
+        <div id="add">
+            <div class="form-group">
+                <label for="sn" style="width: 120px;">Subject Name:</label>
+                <input type="text" name="sn" class="form-control" id="sn" style="width:200px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+            </div>
+            <div class="form-group">
+                <label for="sg" style="width: 120px;">Subject Grade:</label>
+                <input type="text" name="sg" class="form-control" id="sg" style="width:200px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+            </div>
+            <div class="form-group">
+                <label for="sc" style="width: 120px;">Subject Credit:</label>
+                <input type="text" class="form-control" id="sc" name="sc" style="width:200px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+            </div>
+            <br><br>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" onclick="addSubject()">Add Subject</button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger" onclick="removeSubject()">Remove Subject</button>
+        </div><br><br>
+        <div class="form-group">
+            <label id="num">Enter number of Subjects:</label>
+            <input type="number" id="num" name="num" class="form-control">
+        </div><br><br>
+        <div class="btn-group">
+            <button type="button" class="btn btn-success" onclick="calculateCGPA()">Calculate CGPA</button>
+        </div>
+    </form>
+    <script>
+        var subjectCount = 1;
+
+        function addSubject() {
+            var cloneDiv = document.getElementById('add').cloneNode(true);
+            subjectCount++;
+            cloneDiv.id = 'add' + subjectCount;
+            cloneDiv.querySelector('#sn').id = 'sn' + subjectCount;
+            cloneDiv.querySelector('#sg').id = 'sg' + subjectCount;
+            cloneDiv.querySelector('#sc').id = 'sc' + subjectCount;
+            document.getElementById('sn').value="";
+            document.getElementById('sc').value="";
+            document.getElementById('sg').value="";
+            document.querySelector('form').insertBefore(cloneDiv, document.querySelector('.btn-group'));
+        }
+
+        function removeSubject() {
+            if (subjectCount > 1) {
+                var lastSubjectDiv = document.getElementById('add' + subjectCount);
+                lastSubjectDiv.parentNode.removeChild(lastSubjectDiv);
+                subjectCount--;
+            }
+        }
+
+        function calculateCGPA() {
+            var prevCGPA = parseFloat(document.getElementById('pv').value);
+            var prevCredits = parseFloat(document.getElementById('Pc').value);
+            var totalCredits = prevCredits;
+            var totalGradePoints = prevCGPA * prevCredits;
+
+            // console.log("Previous CGPA: " + prevCGPA);
+            // console.log("Previous Credits: " + prevCredits);
+
+            for (var i = 1; i <= subjectCount; i++) {
+                var gradeInput = document.getElementById('sg' + i);
+                var creditInput = document.getElementById('sc' + i);
+
+                if (gradeInput && creditInput) {
+                    var grade = gradeInput.value.toUpperCase();
+                    var credit = parseFloat(creditInput.value);
+
+                    console.log("Subject " + i + " - Grade: " + grade + ", Credit: " + credit);
+                    // document.writeln("Subject " + i + " - Grade: " + grade + ", Credit: " + credit);
+                    var gradePoint;
+                    switch (grade) {
+                        case 'A':
+                            gradePoint = 10;
+                            break;
+                        case 'B':
+                            gradePoint = 8;
+                            break;
+                        case 'C':
+                            gradePoint = 6;
+                            break;
+                        case 'D':
+                            gradePoint = 4;
+                            break;
+                        case 'E':
+                            gradePoint = 2;
+                            break;
+                        case 'F':
+                            gradePoint = 0;
+                            break;
+                        default:
+                            gradePoint = 0;
+                    }
+
+                    totalCredits += credit;
+                    totalGradePoints += gradePoint * credit;
+                }
+            }
+            console.log("Total Credits: " + totalCredits);
+            console.log("Total Grade Points: " + totalGradePoints);
+            var cgpa = totalGradePoints / totalCredits;
+            alert('Your CGPA is: ' + cgpa.toFixed(2));
+        }
+    </script>
+</body>
+</html> 
